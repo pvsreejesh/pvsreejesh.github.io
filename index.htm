@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Adobe Sign Widget Embed</title>
+  <script src="https://documentcloud.adobe.com/view-sdk/viewer.js"></script>
+  <style>
+    #adobe-sign-div {
+      width: 100%;
+      height: 100vh;
+      min-height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id="adobe-sign-div"></div>
+
+  <script>
+    document.addEventListener("adobe_dc_view_sdk.ready", function () {
+      var adobeSign = new AdobeSign({
+        clientId: "3AAABLblqZhBkEAa8bkDdz-b9EWfzJVdr-HtUIKFt2FtSMWzkDmH-FHKMw__LStCSl9276cI5w3AQ3m3hMUZa_8HxOgjPuTpb",  // ⬅️ Replace this with your API key
+        divId: "adobe-sign-div",
+      });
+
+      adobeSign.showWidget({
+        widgetId: "CBFCIBAA3AAABLblqZhBNoznZnmzqKbZIUZ-W5pJ1hVBqtlPrThrpfHTbNKNZDuKy_esp4IAoaTHCWvOSd50*", // ⬅️ Your widget ID
+        showChrome: false  // ✅ This hides header & banner
+      });
+    });
+  </script>
+</body>
+</html>
