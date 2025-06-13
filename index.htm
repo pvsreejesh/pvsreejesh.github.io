@@ -1,25 +1,73 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Success</title>
+  <title>Submission Success</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 40px;
+      padding: 2em;
+      background-color: #f4f4f4;
     }
-    h1 {
-      color: green;
+    .container {
+      background: #fff;
+      padding: 2em;
+      border-radius: 8px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    .info {
-      margin-top: 20px;
-      font-size: 1.2em;
+    .field {
+      margin: 1em 0;
+    }
+    .label {
+      font-weight: bold;
+    }
+    .value {
+      margin-left: 0.5em;
     }
   </style>
 </head>
 <body>
 
+<div class="container">
   <h1>Signed & Submitted Successfully!</h1>
-  
+  <div id="formData">
+    <p>Loading form data...</p>
+  </div>
+</div>
+
+<script>
+  // Extract documentKey from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const documentKey = urlParams.get('documentKey');
+
+  if (documentKey) {
+    const apiUrl = `https://9b6d-106-219-166-118.ngrok-free.app/esignature/api/webform/formdata?documentKey=${encodeURIComponent(documentKey)}`;
+
+    fetch(apiUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch form data");
+        }
+        return response.json();
+      })
+      .then(data => {
+        const formDataDiv = document.getElementById('formData');
+        formDataDiv.innerHTML = `
+          <div class="field"><span class="label">Name:</span><span class="value">${data.name || 'N/A'}</span></div>
+          <div class="field"><span class="label">Email:</span><span class="value">${data.email || 'N/A'}</span></div>
+          <div class="field"><span class="label">Office:</span><span class="value">${data.office || 'N/A'}</span></div>
+          <div class="field"><span class="label">Case ID:</span><span class="value">${data.caseId || 'N/A'}</span></div>
+        `;
+      })
+      .catch(error => {
+        document.getElementById('formData').innerHTML = `<p style="color:red;">Could not load form data. Please try again later.</p>`;
+        console.error(error);
+      });
+  } else {
+    document.getElementById('formData').innerHTML = `<p style="color:red;">No documentKey found in the URL.</p>`;
+  }
+</script>
 
 </body>
 </html>
