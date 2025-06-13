@@ -1,40 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Success</title>
-</head>
-<body>
-  <h1>Signed & Submitted Successfully!</h1>
-  <div id="formDataContainer">Loading...</div>
+<script>
+  // Get documentKey from the URL (e.g., ?documentKey=XYZ...)
+  const urlParams = new URLSearchParams(window.location.search);
+  const documentKey = urlParams.get("documentKey");
 
-  <script>
-    const documentKey = '3AAABLblqZhBkOCZ6CT6RjGdbOLBx3iRI4BgA4TWp-ugGtanfp0Egqnpj2fj_By5-sEEkpK2zRlpCpUzi9-dy_J-Zj790k0WV';
-    const apiUrl = `https://9b6d-106-219-166-118.ngrok-free.app/esignature/api/webform/formdata?documentKey=${encodeURIComponent(documentKey)}`;
+  const apiUrl = `https://9b6d-106-219-166-118.ngrok-free.app/esignature/api/webform/formdata?documentKey=${encodeURIComponent(documentKey)}`;
 
-    fetch(apiUrl, {
-      headers: {
-        "ngrok-skip-browser-warning": "true"
-      }
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then(data => {
-      const container = document.getElementById("formDataContainer");
-      container.innerHTML = `
-        <p><strong>Name:</strong> ${data.name}</p>
-        <p><strong>Email:</strong> ${data.email}</p>
-        <p><strong>Office:</strong> ${data.office}</p>
-        <p><strong>Case ID:</strong> ${data.caseId}</p>
-      `;
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      document.getElementById("formDataContainer").innerText = "Could not load form data. Please try again later.";
-    });
-  </script>
-</body>
-</html>
+  fetch(apiUrl, {
+    headers: {
+      "ngrok-skip-browser-warning": "true"
+    }
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  })
+  .then(data => {
+    const container = document.getElementById("formDataContainer");
+    container.innerHTML = `
+      <p><strong>Name:</strong> ${data.name}</p>
+      <p><strong>Email:</strong> ${data.email}</p>
+      <p><strong>Office:</strong> ${data.office}</p>
+      <p><strong>Case ID:</strong> ${data.caseId}</p>
+    `;
+  })
+  .catch(error => {
+    console.error("Error:", error);
+    document.getElementById("formDataContainer").innerText = "Could not load form data. Please try again later.";
+  });
+</script>
