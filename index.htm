@@ -3,16 +3,59 @@
 <head>
   <title>Success</title>
   <style>
-    iframe {
-      width: 100%;
-      height: 600px;
-      border: none;
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+    }
+    h1 {
+      color: green;
+    }
+    .info {
+      margin-top: 20px;
+      font-size: 1.2em;
     }
   </style>
 </head>
 <body>
 
-<h1>Signed & Submitted Successfully!</h1>
+  <h1>Signed & Submitted Successfully!</h1>
+  <div class="info" id="form-data">
+    <p>Loading form data...</p>
+  </div>
+
+  <script>
+    async function loadFormData() {
+      const params = new URLSearchParams(window.location.search);
+      const documentKey = params.get("documentKey");
+
+      if (!documentKey) {
+        document.getElementById("form-data").innerHTML = "<p style='color:red;'>Missing documentKey in the URL.</p>";
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://your-backend.com/api/adobe/form-data?documentKey=${documentKey}`);
+        if (!response.ok) {
+          throw new Error("Server returned an error");
+        }
+
+        const data = await response.json();
+
+        document.getElementById("form-data").innerHTML = `
+          <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
+          <p><strong>Office:</strong> ${data.office || 'N/A'}</p>
+          <p><strong>Case ID:</strong> ${data.caseId || 'N/A'}</p>
+        `;
+      } catch (e) {
+        console.error(e);
+        document.getElementById("form-data").innerHTML = `
+          <p style="color:red;">Could not load form data. Please try again later.</p>
+        `;
+      }
+    }
+
+    loadFormData();
+  </script>
 
 </body>
 </html>
