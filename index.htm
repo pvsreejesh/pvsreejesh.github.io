@@ -1,73 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Submission Success</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2em;
-      background-color: #f4f4f4;
-    }
-    .container {
-      background: #fff;
-      padding: 2em;
-      border-radius: 8px;
-      max-width: 600px;
-      margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .field {
-      margin: 1em 0;
-    }
-    .label {
-      font-weight: bold;
-    }
-    .value {
-      margin-left: 0.5em;
-    }
-  </style>
+  <title>Success</title>
 </head>
 <body>
-
-<div class="container">
   <h1>Signed & Submitted Successfully!</h1>
-  <div id="formData">
-    <p>Loading form data...</p>
-  </div>
-</div>
+  <div id="formDataContainer">Loading...</div>
 
-<script>
-  // Extract documentKey from URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const documentKey = urlParams.get('documentKey');
-
-  if (documentKey) {
+  <script>
+    const documentKey = '3AAABLblqZhBkOCZ6CT6RjGdbOLBx3iRI4BgA4TWp-ugGtanfp0Egqnpj2fj_By5-sEEkpK2zRlpCpUzi9-dy_J-Zj790k0WV';
     const apiUrl = `https://9b6d-106-219-166-118.ngrok-free.app/esignature/api/webform/formdata?documentKey=${encodeURIComponent(documentKey)}`;
 
-    fetch(apiUrl)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch form data");
-        }
-        return response.json();
-      })
-      .then(data => {
-        const formDataDiv = document.getElementById('formData');
-        formDataDiv.innerHTML = `
-          <div class="field"><span class="label">Name:</span><span class="value">${data.name || 'N/A'}</span></div>
-          <div class="field"><span class="label">Email:</span><span class="value">${data.email || 'N/A'}</span></div>
-          <div class="field"><span class="label">Office:</span><span class="value">${data.office || 'N/A'}</span></div>
-          <div class="field"><span class="label">Case ID:</span><span class="value">${data.caseId || 'N/A'}</span></div>
-        `;
-      })
-      .catch(error => {
-        document.getElementById('formData').innerHTML = `<p style="color:red;">Could not load form data. Please try again later.</p>`;
-        console.error(error);
-      });
-  } else {
-    document.getElementById('formData').innerHTML = `<p style="color:red;">No documentKey found in the URL.</p>`;
-  }
-</script>
-
+    fetch(apiUrl, {
+      headers: {
+        "ngrok-skip-browser-warning": "true"
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then(data => {
+      const container = document.getElementById("formDataContainer");
+      container.innerHTML = `
+        <p><strong>Name:</strong> ${data.name}</p>
+        <p><strong>Email:</strong> ${data.email}</p>
+        <p><strong>Office:</strong> ${data.office}</p>
+        <p><strong>Case ID:</strong> ${data.caseId}</p>
+      `;
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      document.getElementById("formDataContainer").innerText = "Could not load form data. Please try again later.";
+    });
+  </script>
 </body>
 </html>
