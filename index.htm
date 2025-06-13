@@ -1,32 +1,50 @@
-<script>
-  // Get documentKey from the URL (e.g., ?documentKey=XYZ...)
-  const urlParams = new URLSearchParams(window.location.search);
-  const documentKey = urlParams.get("documentKey");
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Adobe Sign Form Data</title>
+</head>
+<body>
+  <h1>Form Submission Details</h1>
+  <div id="formDataContainer">Loading...</div>
 
-  const apiUrl = `https://9b6d-106-219-166-118.ngrok-free.app/esignature/api/webform/formdata?documentKey=${encodeURIComponent(documentKey)}`;
+  <script>
+    // 1. Extract documentKey from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const documentKey = urlParams.get("documentKey");
 
-  fetch(apiUrl, {
-    headers: {
-      "ngrok-skip-browser-warning": "true"
-    }
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  })
-  .then(data => {
-    const container = document.getElementById("formDataContainer");
-    container.innerHTML = `
-      <p><strong>Name:</strong> ${data.name}</p>
-      <p><strong>Email:</strong> ${data.email}</p>
-      <p><strong>Office:</strong> ${data.office}</p>
-      <p><strong>Case ID:</strong> ${data.caseId}</p>
-    `;
-  })
-  .catch(error => {
-    console.error("Error:", error);
-    document.getElementById("formDataContainer").innerText = "Could not load form data. Please try again later.";
-  });
-</script>
+    // 2. Build the API URL
+    const apiUrl = `https://api.in1.adobesign.com/api/rest/v6/agreements/${documentKey}/formData`;
+
+    // 3. Define your Adobe Sign access token (MUST be generated from Adobe)
+    const accessToken = "3AAABLblqZhBkEAa8bkDdz-b9EWfzJVdr-HtUIKFt2FtSMWzkDmH-FHKMw__LStCSl9276cI5w3AQ3m3hMUZa_8HxOgjPuTpb"; // Replace this with a real OAuth token
+
+    // 4. Fetch form data
+    fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      // 5. Render the form fields
+      const container = document.getElementById("formDataContainer");
+      container.innerHTML = "";
+
+      data.fields.forEach(field => {
+        container.innerHTML += `<p><strong>${field.name}:</strong> ${field.value}</p>`;
+      });
+    })
+    .catch(error => {
+      console.error("Error fetching Adobe Sign data:", error);
+      document.getElementById("formDataContainer").innerText = "Could not load form data.";
+    });
+  </script>
+</body>
+</html>
