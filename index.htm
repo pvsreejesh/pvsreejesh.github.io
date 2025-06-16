@@ -105,14 +105,20 @@
       const officeName = officeMap[data.office] || `Office ID: ${data.office}`;
       const roleName = roleMap[data.role] || `Role ID: ${data.role}`;
 
-      const submittedAt = new Date().toLocaleString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true
-      });
+      const completedDate = data.completed;
+  let submittedAt = "Unknown";
+
+  if (completedDate) {
+    const parsedDate = new Date(completedDate);
+    submittedAt = parsedDate.toLocaleString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true
+    });
+  }
 
       container.innerHTML = `
         <p>Thank you, <strong>${name}</strong>,Your request was successfully submitted to the Department of Children and Families on <strong>${submittedAt}</strong>.</p>
