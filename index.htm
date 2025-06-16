@@ -17,6 +17,51 @@
       throw new Error("Missing documentKey");
     }
 
+    // Office ID → Name mapping
+    const officeIdToNameMap = {
+      "1795": "Boston Regional Office",
+      "1774": "Central MA Regional Office",
+      "1778": "Northern Regional Office",
+      "1788": "Southern Regional Office",
+      "1769": "Western Regional Office",
+      "1770": "Berkshire Area Office",
+      "1790": "Brockton Area Office",
+      "1786": "Cambridge-Burlington Area Office",
+      "153914": "Cape Ann Area Office",
+      "1793": "Cape Cod Area Office",
+      "49949": "Coastal Area Office",
+      "1791": "Fall River Area Office",
+      "1785": "Framingham Area Office",
+      "1781": "Greater Haverhill Area Office",
+      "1779": "Greater Lowell Area Office",
+      "1759": "Greater Waltham Area Office",
+      "1771": "Greenfield Area Office",
+      "1800": "Harbor Area Office",
+      "1772": "Holyoke Area Office",
+      "1796": "Hyde Park Area Office",
+      "1797": "Jackson Square Area Office",
+      "1780": "Lawrence Area Office",
+      "1783": "Lynn Area Office",
+      "1784": "Metro North Area Office",
+      "1792": "New Bedford Area Office",
+      "1775": "North Central Area Office",
+      "1799": "Park St. Area Office",
+      "153195": "Plymouth Area Office",
+      "147764": "Robert Van Wart Area Office",
+      "1776": "South Central Area Office",
+      "1773": "Springfield Area Office",
+      "1789": "Taunton/Attleboro Area Office",
+      "182293": "Worcester East Area Office",
+      "182294": "Worcester West Area Office",
+      "50213": "Boston Legal Office",
+      "96077": "Central Legal Office",
+      "45845": "Metro Legal Office",
+      "96075": "Northern Legal DSS Office",
+      "96076": "Southern Legal Office",
+      "96073": "Western Legal Office",
+      "50212": "Office of the General Counsel"
+    };
+
     // Step 2: Define your Spring Boot backend endpoint
     const backendUrl = `https://f38e-106-219-153-197.ngrok-free.app/esignature/api/webform/formdata?documentKey=${encodeURIComponent(documentKey)}`;
 
@@ -42,7 +87,12 @@
         return;
       }
 
-      // Dynamically render key-value pairs from object
+      // Replace office ID with office name, if applicable
+      if (data.office && officeIdToNameMap[data.office]) {
+        data.office = officeIdToNameMap[data.office];
+      }
+
+      // Render all fields
       container.innerHTML = Object.entries(data).map(
         ([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`
       ).join("");
