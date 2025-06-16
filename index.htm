@@ -8,17 +8,23 @@
   <div id="formDataContainer">Loading...</div>
 
   <script>
-    // Step 1: Get documentKey from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const documentKey = urlParams.get("documentKey");
+    // Role ID to Name Mapping
+    const roleMap = {
+      "162513": "Attorney",
+      "162515": "Court",
+      "162516": "Court Investigator",
+      "162518": "Foster/Pre-Adoptive Caregiver",
+      "162519": "Guardian Ad Litem",
+      "162521": "Other",
+      "169215": "Parent/Guardian",
+      "162520": "Probation",
+      "162517": "Youth/Young Adult",
+      "169256": "DCF Fair Hearing Staff",
+      "169233": "Juvenile Court Clinician"
+    };
 
-    if (!documentKey) {
-      document.getElementById("formDataContainer").innerText = "Missing documentKey in URL.";
-      throw new Error("Missing documentKey");
-    }
-
-    // Office ID → Name mapping
-    const officeIdToNameMap = {
+    // Office ID to Name Mapping
+    const officeMap = {
       "1795": "Boston Regional Office",
       "1774": "Central MA Regional Office",
       "1778": "Northern Regional Office",
@@ -31,6 +37,7 @@
       "1793": "Cape Cod Area Office",
       "49949": "Coastal Area Office",
       "1791": "Fall River Area Office",
+      "1785": "Framingham Area Office",
       "1785": "Framingham Area Office",
       "1781": "Greater Haverhill Area Office",
       "1779": "Greater Lowell Area Office",
@@ -62,10 +69,16 @@
       "50212": "Office of the General Counsel"
     };
 
-    // Step 2: Define your Spring Boot backend endpoint
+    const urlParams = new URLSearchParams(window.location.search);
+    const documentKey = urlParams.get("documentKey");
+
+    if (!documentKey) {
+      document.getElementById("formDataContainer").innerText = "Missing documentKey in URL.";
+      throw new Error("Missing documentKey");
+    }
+
     const backendUrl = `https://f38e-106-219-153-197.ngrok-free.app/esignature/api/webform/formdata?documentKey=${encodeURIComponent(documentKey)}`;
 
-    // Step 3: Make the API call to your backend (add ngrok header to bypass warning)
     fetch(backendUrl, {
       method: "GET",
       headers: {
@@ -87,15 +100,31 @@
         return;
       }
 
-      // Replace office ID with office name, if applicable
-      if (data.office && officeIdToNameMap[data.office]) {
-        data.office = officeIdToNameMap[data.office];
-      }
+      const name = data.name || "Requester";
+      const email = data.email || "Not Provided";
+      const caseId = data.caseId || "Not Provided";
+      const officeName = officeMap[data.office] || `Office ID: ${data.office}`;
+      const roleName = roleMap[data.role] || `Role ID: ${data.role}`;
 
-      // Render all fields
-      container.innerHTML = Object.entries(data).map(
-        ([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`
-      ).join("");
+      const submittedAt = new Date().toLocaleString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+      });
+
+      container.innerHTML = `
+        <p>Thank you, <strong>${name}</strong></p>
+        <p>Your request was successfully submitted to the Department of Children and Families on <strong>${submittedAt}</strong>.</p>
+        <p><strong>Requestor Email:</strong> ${email}</p>
+        <p><strong>Requestor Role:</strong> ${roleName}</p>
+        <p><strong>DCF Office:</strong> ${officeName}</p>
+        <p><strong>DCF Case ID:</strong> ${caseId}</p>
+        <br />
+        <p>A member of our team will reach out with any questions. Please note that Personal Record Requests may take a minimum of 30–60 days to process. If you require proof of your submission, please print a copy of this page for your records.</p>
+      `;
     })
     .catch(error => {
       console.error("Error fetching form data from backend:", error);
