@@ -17,18 +17,15 @@
       throw new Error("Missing documentKey");
     }
 
-    // Step 2: Adobe Sign API URL
-    const apiUrl = `https://api.in1.adobesign.com/api/rest/v6/agreements/${encodeURIComponent(documentKey)}/formData`;
+    // Step 2: Define your Spring Boot backend endpoint
+    const backendUrl = `https://f38e-106-219-153-197.ngrok-free.app/esignature/api/webform/formdata?documentKey=${encodeURIComponent(documentKey)}`;
 
-    // Step 3: Replace this with your actual OAuth Bearer token
-    const accessToken = "Bearer 3AAABLblqZhBkEAa8bkDdz-b9EWfzJVdr-HtUIKFt2FtSMWzkDmH-FHKMw__LStCSl9276cI5w3AQ3m3hMUZa_8HxOgjPuTpb"; // ⚠️ Replace with a real token
-
-    // Step 4: Make the API call
-    fetch(apiUrl, {
+    // Step 3: Make the API call to your backend (add ngrok header to bypass warning)
+    fetch(backendUrl, {
       method: "GET",
       headers: {
-        "Authorization": accessToken,
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "ngrok-skip-browser-warning": "true"
       }
     })
     .then(response => {
@@ -40,18 +37,18 @@
     .then(data => {
       const container = document.getElementById("formDataContainer");
 
-      if (!data || !data.fields) {
+      if (!data || data.length === 0) {
         container.innerText = "No form data found.";
         return;
       }
 
-      // Dynamically render all form fields
-      container.innerHTML = data.fields.map(field => `
+      // Dynamically render form fields
+      container.innerHTML = data.map(field => `
         <p><strong>${field.name}:</strong> ${field.value}</p>
       `).join("");
     })
     .catch(error => {
-      console.error("Error fetching Adobe Sign data:", error);
+      console.error("Error fetching form data from backend:", error);
       document.getElementById("formDataContainer").innerText = "Could not load form data.";
     });
   </script>
