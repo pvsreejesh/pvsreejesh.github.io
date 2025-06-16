@@ -105,11 +105,14 @@
       const officeName = officeMap[data.office] || `Office ID: ${data.office}`;
       const roleName = roleMap[data.role] || `Role ID: ${data.role}`;
 
-      const completedDate = data.completed;
-  let submittedAt = "Unknown";
+     const completedDateStr = data.completed;
+let submittedAt = "Unknown";
 
-  if (completedDate) {
-    const parsedDate = new Date(completedDate);
+if (completedDateStr) {
+  // Convert to ISO format by replacing space with 'T'
+  const parsedDate = new Date(completedDateStr.replace(" ", "T"));
+  
+  if (!isNaN(parsedDate)) {
     submittedAt = parsedDate.toLocaleString("en-US", {
       month: "short",
       day: "2-digit",
@@ -119,6 +122,7 @@
       hour12: true
     });
   }
+}
 
       container.innerHTML = `
         <p>Thank you, <strong>${name}</strong>,Your request was successfully submitted to the Department of Children and Families on <strong>${submittedAt}</strong>.</p>
