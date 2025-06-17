@@ -71,6 +71,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const documentKey = urlParams.get("documentKey");
     const agreementStatus = urlParams.get("agreementStatus");
+    const container = document.getElementById("formDataContainer");
     if (!documentKey) {
     if (agreementStatus === "completed") {
       container.innerText = "Document Signed Successfully.";
