@@ -159,13 +159,13 @@
 
       container.innerHTML = `
         <p>Thank you, <strong>${name}</strong>. Your request was successfully submitted to the Department of Children and Families on <strong>${submittedAt}</strong>.</p>
-        <p><strong>Requestor Email:</strong> ${email}</p>
-        <p><strong>Requestor Role:</strong> ${roleName}</p>
-        <p><strong>DCF Office:</strong> ${officeName}</p>
-        <p><strong>DCF Case ID:</strong> ${caseId}</p>
+        <p>Requestor Email: ${email}</p>
+        <p>Requestor Role: ${roleName}</p>
+        <p>DCF Office: ${officeName}</p>
+        <p>DCF Case ID: ${caseId}</p>
         <br />
-        <p>A member of our team will reach out with any questions. Please note that Personal Record Requests may take a minimum of 30–60 days to process. If you require proof of your submission, please print a copy of this page for your records.</p>
-        <p>Thank You</p>
+        <p>A member of our team will reach out with any questions. Please note that Personal Record Requests may take a minimum of 30–60 days to process.<strong> If you require proof of your submission, please print a copy of this page for your records.</strong></p>
+        <p align="center">Thank You</p>
       `;
     })
     .catch(error => {
