@@ -70,11 +70,15 @@
 
     const urlParams = new URLSearchParams(window.location.search);
     const documentKey = urlParams.get("documentKey");
-
+    const agreementStatus = urlParams.get("agreementStatus");
     if (!documentKey) {
-      document.getElementById("formDataContainer").innerText = "Missing documentKey in URL.";
-      throw new Error("Missing documentKey");
+    if (agreementStatus === "completed") {
+      container.innerText = "Document Signed Successfully.";
+    } else {
+      container.innerText = "Missing documentKey in URL.";
     }
+    throw new Error("Missing documentKey");
+  }
 
     const backendUrl = `https://596f-103-121-27-98.ngrok-free.app/esignature/api/webform/formdata?documentKey=${encodeURIComponent(documentKey)}`;
 
