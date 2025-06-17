@@ -2,12 +2,45 @@
 <html>
 <head>
   <title>Adobe Sign Form Data</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f8f8;
+    }
+
+    #formWrapper {
+      text-align: center;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 700px;
+      width: 100%;
+    }
+
+    #formDataContainer {
+      margin-top: 20px;
+    }
+
+    img.logo {
+      max-height: 80px;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-  <div id="formDataContainer">Loading...</div>
+  <div id="formWrapper">
+    <img class="logo" src="https://via.placeholder.com/200x80?text=Logo" alt="Logo" />
+    <div id="formDataContainer">Loading...</div>
+  </div>
 
   <script>
-    // Role ID to Name Mapping
     const roleMap = {
       "162513": "Attorney",
       "162515": "Court",
@@ -22,7 +55,6 @@
       "169233": "Juvenile Court Clinician"
     };
 
-    // Office ID to Name Mapping
     const officeMap = {
       "1795": "Boston Regional Office",
       "1774": "Central MA Regional Office",
@@ -36,7 +68,6 @@
       "1793": "Cape Cod Area Office",
       "49949": "Coastal Area Office",
       "1791": "Fall River Area Office",
-      "1785": "Framingham Area Office",
       "1785": "Framingham Area Office",
       "1781": "Greater Haverhill Area Office",
       "1779": "Greater Lowell Area Office",
@@ -72,14 +103,15 @@
     const documentKey = urlParams.get("documentKey");
     const agreementStatus = urlParams.get("agreementStatus");
     const container = document.getElementById("formDataContainer");
+
     if (!documentKey) {
-    if (agreementStatus === "completed") {
-      container.innerText = "Document Signed Successfully.";
-    } else {
-      container.innerText = "Missing documentKey in URL.";
+      if (agreementStatus === "completed") {
+        container.innerText = "Document Signed Successfully.";
+      } else {
+        container.innerText = "Missing documentKey in URL.";
+      }
+      throw new Error("Missing documentKey");
     }
-    throw new Error("Missing documentKey");
-  }
 
     const backendUrl = `https://596f-103-121-27-98.ngrok-free.app/esignature/api/webform/formdata?documentKey=${encodeURIComponent(documentKey)}`;
 
@@ -97,8 +129,6 @@
       return response.json();
     })
     .then(data => {
-      const container = document.getElementById("formDataContainer");
-
       if (!data || Object.keys(data).length === 0) {
         container.innerText = "No form data found.";
         return;
@@ -110,27 +140,25 @@
       const officeName = officeMap[data.office] || `Office ID: ${data.office}`;
       const roleName = roleMap[data.role] || `Role ID: ${data.role}`;
 
-     const completedDateStr = data.completed;
-let submittedAt = "Unknown";
+      const completedDateStr = data.completed;
+      let submittedAt = "Unknown";
 
-if (completedDateStr) {
-  // Convert to ISO format by replacing space with 'T'
-  const parsedDate = new Date(completedDateStr.replace(" ", "T"));
-  
-  if (!isNaN(parsedDate)) {
-    submittedAt = parsedDate.toLocaleString("en-US", {
-      month: "short",
-      day: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true
-    });
-  }
-}
+      if (completedDateStr) {
+        const parsedDate = new Date(completedDateStr.replace(" ", "T"));
+        if (!isNaN(parsedDate)) {
+          submittedAt = parsedDate.toLocaleString("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true
+          });
+        }
+      }
 
       container.innerHTML = `
-        <p>Thank you, <strong>${name}</strong>,Your request was successfully submitted to the Department of Children and Families on <strong>${submittedAt}</strong>.</p>
+        <p>Thank you, <strong>${name}</strong>. Your request was successfully submitted to the Department of Children and Families on <strong>${submittedAt}</strong>.</p>
         <p><strong>Requestor Email:</strong> ${email}</p>
         <p><strong>Requestor Role:</strong> ${roleName}</p>
         <p><strong>DCF Office:</strong> ${officeName}</p>
@@ -142,7 +170,7 @@ if (completedDateStr) {
     })
     .catch(error => {
       console.error("Error fetching form data from backend:", error);
-      document.getElementById("formDataContainer").innerText = "Could not load form data.";
+      container.innerText = "Could not load form data.";
     });
   </script>
 </body>
