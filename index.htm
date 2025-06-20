@@ -112,9 +112,9 @@
 
     if (!documentKey) {
   if (agreementStatus === "completed") {
-    container.innerHTML = "<p align="center">The document has been signed and submitted successfully.</p>";
+    container.innerHTML = '<p align="center">The document has been signed and submitted successfully.</p>';
   } else if (!agreementStatus) {
-    container.innerHTML = "<p align="center">The form has been submitted successfully.</p>";
+    container.innerHTML = '<p align="center">The form has been submitted successfully.</p>';
   } else {
     container.innerText = "Required information is missing in the URL.";
   }
