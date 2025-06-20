@@ -111,13 +111,15 @@
     const container = document.getElementById("formDataContainer");
 
     if (!documentKey) {
-      if (agreementStatus === "completed") {
-        container.innerText = "Document Signed Successfully.";
-      } else {
-        container.innerText = "Missing documentKey in URL.";
-      }
-      throw new Error("Missing documentKey");
-    }
+  if (agreementStatus === "completed") {
+    container.innerText = "The document has been signed and submitted successfully.";
+  } else if (!agreementStatus) {
+    container.innerText = "The form has been submitted successfully.";
+  } else {
+    container.innerText = "Required information is missing in the URL.";
+  }
+  throw new Error("Missing documentKey");
+}
 
     const backendUrl = `https://d835-103-121-27-98.ngrok-free.app/esignature/api/webform/formdata?documentKey=${encodeURIComponent(documentKey)}`;
 
